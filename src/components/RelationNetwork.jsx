@@ -4,7 +4,7 @@ import { DataSet } from "vis-data";
 import KitsuRelation from "../lib/kitsuRelation";
 import brokenImage from "../imgs/broken-image-small.png";
 
-class RelationNetwork extends React.Component {
+class RelationNetwork extends React.PureComponent {
     state = {
         maxDepth: 12,
     };

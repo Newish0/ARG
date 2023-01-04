@@ -55,7 +55,7 @@ class KitsuSimpleSearchBar extends Component {
                     }
                     placeholder="Anime name..."
                 ></input>
-                <div hidden={this.state.hideResults}>
+                <div hidden={this.state.hideResults} className="search-results">
                     {this.state.topResults.map((item, index) => {
                         const { attributes } = item;
                         return (

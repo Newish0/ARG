@@ -17,3 +17,8 @@ input {
 .poster-and-title img {
     width: 64px;
 }
+
+.search-results {
+    position: absolute;
+    background-color: #fff;
+}

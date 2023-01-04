@@ -17,6 +17,12 @@ class DetailPanel extends Component {
                     <time>{startDate}</time> to ? <p>({status})</p>
                 </React.Fragment>
             );
+        } else if (startDate === endDate) {
+            return (
+                <React.Fragment>
+                    <time>{startDate}</time>
+                </React.Fragment>
+            );
         } else {
             return (
                 <React.Fragment>
@@ -29,9 +35,11 @@ class DetailPanel extends Component {
     render() {
         const { mediaData } = this.props;
 
-        if(!mediaData) return <div></div>;
+        if (!mediaData) return <div></div>;
 
         const { type } = mediaData;
+
+        console.log(mediaData);
 
         const {
             canonicalTitle,

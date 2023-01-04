@@ -14,6 +14,8 @@
 .side-bar {
   width: min(400px, 25%);
   margin: 10px;
+  display: flex;
+  flex-direction: column;
 }
 
 .center {

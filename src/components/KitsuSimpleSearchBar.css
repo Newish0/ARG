@@ -23,5 +23,5 @@ input {
 .search-results {
     position: absolute;
     background-color: #fff;
-    width: inherit;
+    width: -webkit-fill-available;
 }

@@ -2,9 +2,7 @@ import React, { Component } from "react";
 import Kitsu from "../lib/kitsu";
 
 class DetailPanel extends Component {
-    state = {
-        mediaData: this.props.mediaData,
-    };
+    state = {};
 
     getDateRange(startDate, endDate, tba, status) {
         if (tba) {
@@ -28,18 +26,10 @@ class DetailPanel extends Component {
         }
     }
 
-    componentDidMount = () => {
-        this.props.onMount(this.setMediaData);
-    }
-
-    setMediaData = (mediaData) => {
-        this.setState({ mediaData });
-    };
-
     render() {
-        const { mediaData } = this.state;
+        const { mediaData } = this.props;
 
-        if (!mediaData) return <div></div>;
+        if(!mediaData) return <div></div>;
 
         const { type } = mediaData;
 

@@ -13,8 +13,22 @@
 
 .side-bar {
   width: min(400px, 25%);
+  margin: 10px;
 }
 
+.center {
+  justify-content: center;
+  text-align: center;
+}
+
+.col {
+  display: flex;
+  flex-direction: column;
+}
+
+.scroll {
+  overflow: auto;
+}
 
 #relVisNetwork {
   position: relative;

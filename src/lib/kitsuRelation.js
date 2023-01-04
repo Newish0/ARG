@@ -6,9 +6,13 @@ import { eFetchJSON } from "./eFetchJSON";
 class KitsuRelation {
     static BASEURL = `https://kitsu.io/api/edge/media-relationships`
 
-    static async get(id, maxDepth = 0) {
+    static async get(id, type, maxDepth = 0) {
         let accumData = [];
-        await this.#getRecur(id, "Anime", 0, maxDepth, accumData, []);
+
+        // Ensure type[0] is upper case
+        type = type[0].toUpperCase() + type.substring(1);
+
+        await this.#getRecur(id, type, 0, maxDepth, accumData, []);
         return accumData;
     }
 

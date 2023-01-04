@@ -67,7 +67,7 @@ class KitsuSimpleSearchBar extends Component {
                                         query: attributes.canonicalTitle,
                                     });
 
-                                    this.props.resultHandler(item.id);
+                                    this.props.onResult(item);
                                 }}
                                 className="poster-and-title"
                                 key={`${index}-${item.id}-${item.type}`}

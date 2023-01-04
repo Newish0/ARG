@@ -2,8 +2,9 @@ import React from "react";
 import { Network } from "vis-network";
 import { DataSet } from "vis-data";
 import KitsuRelation from "../lib/kitsuRelation";
+import brokenImage from "../imgs/broken-image-small.png";
 
-class KitsuRelationNetwork extends React.Component {
+class RelationNetwork extends React.Component {
     state = {
         maxDepth: 12,
     };
@@ -15,7 +16,7 @@ class KitsuRelationNetwork extends React.Component {
             .replace(/^[-_]*(.)/, (_, c) => c.toUpperCase()) // Initial char (after -/_)
             .replace(/[-_]+(.)/g, (_, c) => " " + c.toUpperCase()); // First char after each -/_
 
-    updateVisNetwork = async (container, id) => {
+    updateVisNetwork = async (container, id, type) => {
         const relRoleColorMap = {
             prequel: "hsl(0, 50%, 70%)",
             summery: "hsl(23, 50%, 70%)",
@@ -31,13 +32,15 @@ class KitsuRelationNetwork extends React.Component {
         };
 
         // const rawRelations = await KitsuRelation.get(5287, 5);
-        const rawRelations = await KitsuRelation.get(id, this.state.maxDepth);
+        const rawRelations = await KitsuRelation.get(
+            id,
+            type,
+            this.state.maxDepth
+        );
         console.log("kitsu relation", rawRelations);
 
-        let desRelObj = KitsuRelation.parseRelations(rawRelations);
-        console.log(desRelObj);
-
-        let { relations, destinations } = desRelObj;
+        let { relations, destinations } =
+            KitsuRelation.parseRelations(rawRelations);
 
         let edgeInfoList = relations.map((rel) => {
             const desData = rel.relationships.destination.data;
@@ -58,6 +61,7 @@ class KitsuRelationNetwork extends React.Component {
             };
         });
 
+        // Simplify graph
         for (let i = edgeInfoList.length - 1; i >= 0; i--) {
             const a = edgeInfoList[i];
             for (let j = edgeInfoList.length - 1; j >= 0; j--) {
@@ -90,32 +94,15 @@ class KitsuRelationNetwork extends React.Component {
                 label: des.attributes.canonicalTitle,
                 shape: "circularImage",
                 image: des.attributes.posterImage.small,
-                color: des.type === "anime" ? "#00fffb": "#ff00d4",
+                color: des.type === "anime" ? "#00fffb" : "#ff00d4",
                 borderWidth: des.id === id ? 12 : 4,
             };
         });
 
         console.log("Node list info:", nodeInfoList);
 
-        // create an array with nodes
-        // let nodes = new vis.DataSet([
-        //     { id: 1, label: "Node 1" },
-        //     { id: 2, label: "Node 2" },
-        //     { id: 3, label: "Node 3" },
-        //     { id: 4, label: "Node 4" },
-        //     { id: 5, label: "Node 5" },
-        // ]);
         let nodes = new DataSet(nodeInfoList);
         let edges = new DataSet(edgeInfoList);
-
-        // // create an array with edges
-        // let edges = new vis.DataSet([
-        //     { from: 1, to: 3, label: "1 to 3" },
-        //     { from: 1, to: 2 },
-        //     { from: 2, to: 4 },
-        //     { from: 2, to: 5 },
-        //     { from: 3, to: 3 },
-        // ]);
 
         // create a graph
         let data = {
@@ -139,6 +126,7 @@ class KitsuRelationNetwork extends React.Component {
             nodes: {
                 shape: "dot",
                 size: 32,
+                brokenImage,
             },
             physics: {
                 forceAtlas2Based: {
@@ -154,28 +142,31 @@ class KitsuRelationNetwork extends React.Component {
             },
             layout: {
                 randomSeed: 0,
-                // hierarchical: {
-                //     direction: "LR",
-                //     sortMethod: "hubsize",
-                //     nodeSpacing: 500,
-                // }
             },
         };
 
         let network = new Network(container, data, options);
 
-        network.on("click", (params) => {
-            console.log(params);
+        // network.on("click", (params) => {
+        //     console.log(params);
+        // });
+
+        network.on("selectNode", (params) => {
+            this.props.onSelectNode(params);
         });
+
+        // TODO
+        if (nodeInfoList.length < 1) {
+            console.log("RelationNetwork: No INFO! (TODO)");
+        }
     };
 
     componentDidUpdate = () => {
         // create a network
-        var container = document.getElementById("relVisNetwork");
+        const container = document.getElementById("relVisNetwork");
+        const { kitsuID, kitsuType } = this.props;
 
-        // container.textContent = this.props.kitsuID;
-
-        this.updateVisNetwork(container, this.props.kitsuID);
+        this.updateVisNetwork(container, kitsuID, kitsuType);
     };
 
     render = () => {
@@ -183,4 +174,4 @@ class KitsuRelationNetwork extends React.Component {
     };
 }
 
-export default KitsuRelationNetwork;
+export default RelationNetwork;

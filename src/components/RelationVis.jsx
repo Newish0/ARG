@@ -41,7 +41,9 @@ class RelationVis extends Component {
         const id = selectedNodeID.split("-")[1];
 
         Kitsu.getByTypeID(type, id).then((data) => {
-            this.setState({ detailPanelData: data.data });
+            // this.setState({ detailPanelData: data.data });
+
+            this.detailPanelSetter(data.data);
         });
     };
 
@@ -55,7 +57,9 @@ class RelationVis extends Component {
                         settleTime={300}
                         onResult={this.dataChangeHandler}
                     ></KitsuSimpleSearchBar>
-                    <DetailPanel mediaData={detailPanelData}></DetailPanel>
+                    <DetailPanel mediaData={detailPanelData} onMount={ (setter)=> {
+                        this.detailPanelSetter = setter;
+                    }}></DetailPanel>
                 </div>
                 <RelationNetwork
                     kitsuID={kitsuData ? kitsuData.id : 0}

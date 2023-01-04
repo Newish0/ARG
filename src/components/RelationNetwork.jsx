@@ -128,7 +128,7 @@ class RelationNetwork extends React.PureComponent {
             edges: {
                 length: 500,
                 arrows: {
-                    to: {
+                    from: {
                         enabled: true,
                         type: "arrow",
                     },

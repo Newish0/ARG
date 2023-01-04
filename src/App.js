@@ -4,12 +4,12 @@ import RelationVis from './components/RelationVis';
 
 const App = () => {
   return (
-    <div>
+    <div id="App">
       <div>
         <h1>ARG</h1>
         <p>Anime Relation Graph Visualization</p>
       </div>
-      <div className='app-container'>
+      <div className='row fill-height'>
         <RelationVis></RelationVis>
       </div>
     </div>

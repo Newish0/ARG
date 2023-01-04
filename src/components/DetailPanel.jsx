@@ -53,7 +53,7 @@ class DetailPanel extends Component {
         } = mediaData.attributes;
 
         return (
-            <div className="col center scroll">
+            <div className="display-contents center scroll">
                 <img
                     src={posterImage.medium}
                     alt={`Poster of ${canonicalTitle}`}

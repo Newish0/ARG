@@ -39,7 +39,7 @@ class KitsuSimpleSearchBar extends Component {
 
     render = () => {
         return (
-            <div>
+            <div className="search-container">
                 <input
                     type="text"
                     value={this.state.query}

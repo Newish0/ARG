@@ -7,6 +7,11 @@ import brokenImage from "../imgs/broken-image-small.png";
 class RelationNetwork extends React.PureComponent {
     state = {
         maxDepth: 12,
+        loading: {
+            status: false,
+            message: "",
+            percentage: 0,
+        },
     };
 
     // kebab & snake case to title case
@@ -30,6 +35,15 @@ class RelationNetwork extends React.PureComponent {
             full_story: "hsl(207, 50%, 70%)",
             other: "hsl(230, 50%, 70%)",
         };
+
+        // FIXME: move loading bar to outside component
+        // this.setState({
+        //     loading: {
+        //         status: true,
+        //         message: "Fetching data",
+        //         percentage: 0,
+        //     },
+        // });
 
         // const rawRelations = await KitsuRelation.get(5287, 5);
         const rawRelations = await KitsuRelation.get(
@@ -170,7 +184,18 @@ class RelationNetwork extends React.PureComponent {
     };
 
     render = () => {
-        return <div id="relVisNetwork"></div>;
+        const { loading } = this.state;
+        return (
+            <div className="fill-width fill-height col mid center">
+                {
+                    // TODO! more issue with updating relVisNetwork
+                    /* <div hidden={loading.status} id="relVisNetworkStatus" className="">
+                    <div>{loading.message}</div>
+                </div> */
+                }
+                <div id="relVisNetwork"></div>
+            </div>
+        );
     };
 }
 

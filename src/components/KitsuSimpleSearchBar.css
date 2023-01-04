@@ -1,9 +1,7 @@
-
 input {
     width: 100%;
     box-sizing: border-box;
 }
-
 
 .poster-and-title {
     display: flex;
@@ -18,7 +16,12 @@ input {
     width: 64px;
 }
 
+.search-container {
+    position: relative;
+}
+
 .search-results {
     position: absolute;
     background-color: #fff;
+    width: inherit;
 }

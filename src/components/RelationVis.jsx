@@ -2,6 +2,7 @@ import React, { Component } from "react";
 import RelationNetwork from "./RelationNetwork";
 import KitsuSimpleSearchBar from "./KitsuSimpleSearchBar";
 import DetailPanel from "./DetailPanel";
+import LoadingBar from "./LoadingBar";
 import Kitsu from "../lib/kitsu";
 
 /* 
@@ -24,6 +25,10 @@ class RelationVis extends Component {
     state = {
         kitsuData: null,
         detailPanelData: null,
+        loadingData: {
+            percentage: null,
+            message: "",
+        },
     };
 
     // Param: KitsuData
@@ -45,8 +50,17 @@ class RelationVis extends Component {
         });
     };
 
+    progressHandler = (percentage, message) => {
+        this.setState({
+            loadingData: {
+                percentage,
+                message,
+            },
+        });
+    };
+
     render = () => {
-        const { kitsuData, detailPanelData } = this.state;
+        const { kitsuData, detailPanelData, loadingData } = this.state;
 
         return (
             <React.Fragment>
@@ -54,14 +68,23 @@ class RelationVis extends Component {
                     <KitsuSimpleSearchBar
                         settleTime={300}
                         onResult={this.dataChangeHandler}
-                    ></KitsuSimpleSearchBar>
-                    <DetailPanel mediaData={detailPanelData}></DetailPanel>
+                    />
+                    <DetailPanel mediaData={detailPanelData} />
                 </div>
-                <RelationNetwork
-                    kitsuID={kitsuData ? kitsuData.id : 0}
-                    kitsuType={kitsuData ? kitsuData.type : ""}
-                    onSelectNode={this.nodeSelectHandler}
-                ></RelationNetwork>
+                <div>
+                    <RelationNetwork
+                        kitsuID={kitsuData ? kitsuData.id : 0}
+                        kitsuType={kitsuData ? kitsuData.type : ""}
+                        onSelectNode={this.nodeSelectHandler}
+                        onProgress={this.progressHandler}
+                    />
+                    <LoadingBar
+                        hidden={loadingData.percentage === null}
+                        percentProgress={loadingData.percentage}
+                    >
+                        {loadingData.message}
+                    </LoadingBar>
+                </div>
             </React.Fragment>
         );
     };

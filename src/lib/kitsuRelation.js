@@ -6,20 +6,24 @@ import { eFetchJSON } from "./eFetchJSON";
 class KitsuRelation {
     static BASEURL = `https://kitsu.io/api/edge/media-relationships`
 
-    static async get(id, type, maxDepth = 0) {
+    static async get(id, type, maxDepth = 0, progressCallback) {
         let accumData = [];
 
         // Ensure type[0] is upper case
         type = type[0].toUpperCase() + type.substring(1);
 
-        await this.#getRecur(id, type, 0, maxDepth, accumData, []);
+        await this.#getRecur(id, type, 0, maxDepth, accumData, [], progressCallback);
         return accumData;
     }
 
     // BFS 
     // TODO: parse as async to improve performance --> move to Iter. ver.
-    static async #getRecur(id, type, depth, maxDepth, accumData, visited) {
+    static async #getRecur(id, type, depth, maxDepth, accumData, visited, progressCallback) {
         if (depth > maxDepth) return false;
+
+        if (progressCallback) {
+            progressCallback(depth / maxDepth);
+        }
 
         const url = `${this.BASEURL}?filter[source_id]=${id}&filter[source_type]=${type}&include=destination&page[limit]=20&&sort=role`
 
@@ -58,7 +62,7 @@ class KitsuRelation {
 
             destType = destType[0].toUpperCase() + destType.substring(1);
 
-            recRelsCalls.push(this.#getRecur(desId, destType, depth + 1, maxDepth, accumData, visited));
+            recRelsCalls.push(this.#getRecur(desId, destType, depth + 1, maxDepth, accumData, visited, progressCallback));
         }
 
         await Promise.all(recRelsCalls);

@@ -1,7 +1,7 @@
-import React, { Component } from "react";
+import React, { PureComponent } from "react";
 import Kitsu from "../lib/kitsu";
 
-class DetailPanel extends Component {
+class DetailPanel extends PureComponent {
     state = {};
 
     getDateRange(startDate, endDate, tba, status) {
@@ -57,6 +57,7 @@ class DetailPanel extends Component {
                 <img
                     src={posterImage.medium}
                     alt={`Poster of ${canonicalTitle}`}
+                    style={{width: "100%"}}
                 />
                 <a href={`https://kitsu.io/${type}/${slug}`} target="_blank">
                     <h1>{canonicalTitle}</h1>

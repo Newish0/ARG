@@ -57,7 +57,12 @@ class RelationNetwork extends React.PureComponent {
         const rawRelations = await KitsuRelation.get(
             id,
             type,
-            this.state.maxDepth
+            this.state.maxDepth,
+            (proportion) => {
+                let percentage = proportion * 50;
+                console.log("PROGRESS CHANGE")
+                this.props.onProgress(percentage, "Fetching data");
+            }
         );
         console.log("kitsu relation", rawRelations);
 
@@ -177,6 +182,17 @@ class RelationNetwork extends React.PureComponent {
             this.props.onSelectNode(params);
         });
 
+        //
+        network.on("stabilizationProgress", (params) => {
+            let percentage = 50 + (params.iterations / params.total) * 50;
+            this.props.onProgress(percentage, "Generating graph");
+        });
+
+        // Callback when complete loading.
+        network.once("stabilizationIterationsDone", () => {
+            this.props.onProgress(null, "");
+        });
+
         // TODO
         if (nodeInfoList.length < 1) {
             console.log("RelationNetwork: No INFO! (TODO)");
@@ -186,14 +202,26 @@ class RelationNetwork extends React.PureComponent {
     componentDidUpdate = () => {
         const { kitsuID, kitsuType } = this.props;
         this.createVisNetwork(kitsuID, kitsuType);
-    }
+    };
 
     render = () => {
         const { loading } = this.state;
-        
+
         return (
-            <div className="fill-width fill-height col mid center">
-                <div ref={this.containerRef} id="relVisNetwork"></div>
+            <div
+                style={{ position: "relative", width: "100%", height: " 100%" }}
+            >
+                <div
+                    style={{
+                        position: "absolute",
+                        top: 0,
+                        right: 0,
+                        left: 0,
+                        bottom: 0,
+                    }}
+                    ref={this.containerRef}
+                    id="relVisNetwork"
+                />
             </div>
         );
     };

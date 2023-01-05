@@ -9,7 +9,7 @@ const App = () => {
         <h1>ARG</h1>
         <p>Anime Relation Graph Visualization</p>
       </div>
-      <div className='row fill-height'>
+      <div className='main-grid'>
         <RelationVis></RelationVis>
       </div>
     </div>

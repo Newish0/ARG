@@ -32,6 +32,10 @@ class DetailPanel extends PureComponent {
         }
     }
 
+    capitalizeFirstLetter(str) {
+        return str[0].toUpperCase() + str.substring(1);
+    }
+
     render() {
         const { mediaData } = this.props;
 
@@ -50,23 +54,55 @@ class DetailPanel extends PureComponent {
             tba,
             synopsis,
             slug,
+            subtype,
         } = mediaData.attributes;
 
+        let backdropImage = posterImage.small;
+
         return (
-            <div className="center scroll">
-                <img
-                    src={posterImage.medium}
-                    alt={`Poster of ${canonicalTitle}`}
-                    style={{width: "100%"}}
-                />
-                <a href={`https://kitsu.io/${type}/${slug}`} target="_blank">
-                    <h1>{canonicalTitle}</h1>
-                </a>
-                <div>{this.getDateRange(startDate, endDate, tba, status)}</div>
-                <div>
-                    <p>{synopsis}</p>
+            <React.Fragment>
+                <div
+                    style={{
+                        position: "absolute",
+                        top: 0,
+                        left: 0,
+                        width: "100%",
+                        height: "100%",
+                        backgroundImage: `url(${backdropImage})`,
+                        filter: "blur(20px)",
+                        opacity: 0.3,
+                        zIndex: 0,
+                        backgroundOrigin: "border-box",
+                        backgroundPosition: "center",
+                        backgroundSize: "contain",
+                    }}
+                ></div>
+
+                <div className="center scroll" style={{ position: "relative" }}>
+                    <img
+                        src={posterImage.medium}
+                        alt={`Poster of ${canonicalTitle}`}
+                        style={{ width: "100%" }}
+                    />
+                    <div style={{ padding: "10px" }}>
+                        <a
+                            href={`https://kitsu.io/${type}/${slug}`}
+                            target="_blank"
+                            rel="noreferrer"
+                        >
+                            <h1>{canonicalTitle}</h1>
+                        </a>
+                        <div>{this.capitalizeFirstLetter(subtype)}</div>
+                        <br />
+                        <div>
+                            {this.getDateRange(startDate, endDate, tba, status)}
+                        </div>
+                        <div>
+                            <p>{synopsis}</p>
+                        </div>
+                    </div>
                 </div>
-            </div>
+            </React.Fragment>
         );
     }
 }

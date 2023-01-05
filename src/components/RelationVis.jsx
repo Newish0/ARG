@@ -3,6 +3,7 @@ import RelationNetwork from "./RelationNetwork";
 import KitsuSimpleSearchBar from "./KitsuSimpleSearchBar";
 import DetailPanel from "./DetailPanel";
 import LoadingBar from "./LoadingBar";
+import NetworkInfoOverlay from "./NetworkInfoOverlay";
 import Kitsu from "../lib/kitsu";
 
 /* 
@@ -29,6 +30,7 @@ class RelationVis extends Component {
             percentage: null,
             message: "",
         },
+        networkNoData: false,
     };
 
     // Param: KitsuData
@@ -59,8 +61,13 @@ class RelationVis extends Component {
         });
     };
 
+    networkNoDataHandler = (noData) => {
+        this.setState({ networkNoData: noData });
+    };
+
     render = () => {
-        const { kitsuData, detailPanelData, loadingData } = this.state;
+        const { kitsuData, detailPanelData, loadingData, networkNoData } =
+            this.state;
 
         return (
             <React.Fragment>
@@ -77,13 +84,20 @@ class RelationVis extends Component {
                         kitsuType={kitsuData ? kitsuData.type : ""}
                         onSelectNode={this.nodeSelectHandler}
                         onProgress={this.progressHandler}
+                        onNoData={this.networkNoDataHandler}
                     />
-                    <LoadingBar
+
+                    <NetworkInfoOverlay
                         hidden={loadingData.percentage === null}
-                        percentProgress={loadingData.percentage}
                     >
-                        {loadingData.message}
-                    </LoadingBar>
+                        <LoadingBar percentProgress={loadingData.percentage}>
+                            {loadingData.message}
+                        </LoadingBar>
+                    </NetworkInfoOverlay>
+
+                    <NetworkInfoOverlay hidden={!networkNoData}>
+                        <h2>No Data!</h2>
+                    </NetworkInfoOverlay>
                 </div>
             </React.Fragment>
         );

@@ -1,25 +1,12 @@
 import React, { Component } from "react";
+import { Theme } from '../Colors';
 
 class LoadingBar extends Component {
     state = {};
     render() {
-        const { children, percentProgress, hidden } = this.props;
+        const { children, percentProgress} = this.props;
         return (
-            <div
-                style={{
-                    position: "absolute",
-                    top: 0,
-                    width: "-webkit-fill-available",
-                    display: hidden ? "none" : "flex",
-                    height: "-webkit-fill-available",
-                    justifyContent: "center",
-                    alignItems: "center",
-                    flexDirection: "column",
-                    boxSizing: "border-box",
-                    gap: "12px",
-                    backdropFilter: "blur(16px)"
-                }}
-            >
+            <React.Fragment>
                 <div>{children}</div>
                 <div
                     style={{
@@ -41,7 +28,7 @@ class LoadingBar extends Component {
                     </div>
                     <div
                         style={{
-                            background: "#999",
+                            background: Theme.primary,
                             height: "100%",
                             width: `calc(100% * ${percentProgress / 100})`,
                             position: "absolute",
@@ -52,7 +39,7 @@ class LoadingBar extends Component {
                         }}
                     ></div>
                 </div>
-            </div>
+            </React.Fragment>
         );
     }
 }

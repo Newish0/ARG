@@ -7,11 +7,6 @@ import brokenImage from "../imgs/broken-image-small.png";
 class RelationNetwork extends React.PureComponent {
     state = {
         maxDepth: 12,
-        loading: {
-            status: false,
-            message: "",
-            percentage: 0,
-        },
     };
 
     constructor(props) {
@@ -42,15 +37,6 @@ class RelationNetwork extends React.PureComponent {
             other: "hsl(230, 50%, 70%)",
         };
 
-        // FIXME: move loading bar to outside component
-        // this.setState({
-        //     loading: {
-        //         status: true,
-        //         message: "Fetching data",
-        //         percentage: 0,
-        //     },
-        // });
-
         const container = this.containerRef.current;
 
         // const rawRelations = await KitsuRelation.get(5287, 5);
@@ -60,7 +46,6 @@ class RelationNetwork extends React.PureComponent {
             this.state.maxDepth,
             (proportion) => {
                 let percentage = proportion * 50;
-                console.log("PROGRESS CHANGE")
                 this.props.onProgress(percentage, "Fetching data");
             }
         );
@@ -84,7 +69,6 @@ class RelationNetwork extends React.PureComponent {
                     id: rel.id,
                     type: rel.type,
                 },
-                // group: rel.depth
             };
         });
 
@@ -121,8 +105,8 @@ class RelationNetwork extends React.PureComponent {
                 label: des.attributes.canonicalTitle,
                 shape: "circularImage",
                 image: des.attributes.posterImage.small,
-                color: des.type === "anime" ? "#00fffb" : "#ff00d4",
-                borderWidth: des.id === id ? 12 : 4,
+                color: des.type === "anime" ? "#00fffb" : (des.attributes.subtype === "manga" ? "#ff00d4" : "#91ff00"),
+                borderWidth: 4,
             };
         });
 
@@ -161,10 +145,12 @@ class RelationNetwork extends React.PureComponent {
                     centralGravity: 0.001,
                     springLength: 250,
                     springConstant: 0.1,
+                    avoidOverlap: 0.2,
                 },
                 maxVelocity: 100,
                 solver: "forceAtlas2Based",
-                timestep: 0.1,
+                timestep: 0.25,
+                adaptiveTimestep: true,
                 stabilization: { iterations: 1000 },
             },
             layout: {
@@ -174,29 +160,44 @@ class RelationNetwork extends React.PureComponent {
 
         let network = new Network(container, data, options);
 
-        // network.on("click", (params) => {
-        //     console.log(params);
-        // });
-
         network.on("selectNode", (params) => {
             this.props.onSelectNode(params);
         });
 
-        //
+        // Callback on each stabilization step
         network.on("stabilizationProgress", (params) => {
             let percentage = 50 + (params.iterations / params.total) * 50;
             this.props.onProgress(percentage, "Generating graph");
         });
 
-        // Callback when complete loading.
+        // Callback when complete stabilization.
         network.once("stabilizationIterationsDone", () => {
             this.props.onProgress(null, "");
+
+            // Zoom to root node
+            this.zoomToNode(network, `${type}-${id}`);
         });
 
-        // TODO
-        if (nodeInfoList.length < 1) {
-            console.log("RelationNetwork: No INFO! (TODO)");
+        this.props.onNoData(nodeInfoList.length < 1);
+    };
+
+    zoomToNode = (
+        network,
+        nodeID,
+        options = {
+            scale: 0.9,
+            offset: { x: 0, y: 0 },
+            animation: {
+                duration: 1000,
+                easingFunction: "easeInOutCubic",
+            },
         }
+    ) => {
+        const nodePos = network.getPosition(nodeID);
+        network.moveTo({
+            position: nodePos,
+            ...options,
+        });
     };
 
     componentDidUpdate = () => {
@@ -205,11 +206,14 @@ class RelationNetwork extends React.PureComponent {
     };
 
     render = () => {
-        const { loading } = this.state;
-
         return (
             <div
-                style={{ position: "relative", width: "100%", height: " 100%" }}
+                style={{
+                    position: "relative",
+                    width: "100%",
+                    height: " 100%",
+                    backgroundColor: "#efefef",
+                }}
             >
                 <div
                     style={{

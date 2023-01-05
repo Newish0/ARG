@@ -14,6 +14,12 @@ class RelationNetwork extends React.PureComponent {
         },
     };
 
+    constructor(props) {
+        super(props);
+
+        this.containerRef = React.createRef();
+    }
+
     // kebab & snake case to title case
     // Source: https://stackoverflow.com/a/64489760
     titleCase = (s) =>
@@ -21,7 +27,7 @@ class RelationNetwork extends React.PureComponent {
             .replace(/^[-_]*(.)/, (_, c) => c.toUpperCase()) // Initial char (after -/_)
             .replace(/[-_]+(.)/g, (_, c) => " " + c.toUpperCase()); // First char after each -/_
 
-    updateVisNetwork = async (container, id, type) => {
+    createVisNetwork = async (id, type) => {
         const relRoleColorMap = {
             prequel: "hsl(0, 50%, 70%)",
             summery: "hsl(23, 50%, 70%)",
@@ -44,6 +50,8 @@ class RelationNetwork extends React.PureComponent {
         //         percentage: 0,
         //     },
         // });
+
+        const container = this.containerRef.current;
 
         // const rawRelations = await KitsuRelation.get(5287, 5);
         const rawRelations = await KitsuRelation.get(
@@ -176,24 +184,16 @@ class RelationNetwork extends React.PureComponent {
     };
 
     componentDidUpdate = () => {
-        // create a network
-        const container = document.getElementById("relVisNetwork");
         const { kitsuID, kitsuType } = this.props;
-
-        this.updateVisNetwork(container, kitsuID, kitsuType);
-    };
+        this.createVisNetwork(kitsuID, kitsuType);
+    }
 
     render = () => {
         const { loading } = this.state;
+        
         return (
             <div className="fill-width fill-height col mid center">
-                {
-                    // TODO! more issue with updating relVisNetwork
-                    /* <div hidden={loading.status} id="relVisNetworkStatus" className="">
-                    <div>{loading.message}</div>
-                </div> */
-                }
-                <div id="relVisNetwork"></div>
+                <div ref={this.containerRef} id="relVisNetwork"></div>
             </div>
         );
     };

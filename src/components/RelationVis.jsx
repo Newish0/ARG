@@ -4,6 +4,7 @@ import KitsuSimpleSearchBar from "./KitsuSimpleSearchBar";
 import DetailPanel from "./DetailPanel";
 import LoadingBar from "./LoadingBar";
 import NetworkInfoOverlay from "./NetworkInfoOverlay";
+import NetworkSettingBtn from "./NetworkSettingBtn";
 import Kitsu from "../lib/kitsu";
 
 /* 
@@ -31,6 +32,7 @@ class RelationVis extends Component {
             message: "",
         },
         networkNoData: false,
+        showSettingsOverlay: false,
     };
 
     // Param: KitsuData
@@ -85,6 +87,7 @@ class RelationVis extends Component {
                         onSelectNode={this.nodeSelectHandler}
                         onProgress={this.progressHandler}
                         onNoData={this.networkNoDataHandler}
+                        maxDepth={20}
                     />
 
                     <NetworkInfoOverlay
@@ -98,6 +101,8 @@ class RelationVis extends Component {
                     <NetworkInfoOverlay hidden={!networkNoData}>
                         <h2>No Data!</h2>
                     </NetworkInfoOverlay>
+
+                    {/* <NetworkSettingBtn /> */}
                 </div>
             </React.Fragment>
         );

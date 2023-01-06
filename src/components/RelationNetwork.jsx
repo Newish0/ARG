@@ -6,7 +6,7 @@ import brokenImage from "../imgs/broken-image-small.png";
 
 class RelationNetwork extends React.PureComponent {
     state = {
-        maxDepth: 12,
+        maxDepth: this.props.maxDepth ?? 12,
     };
 
     constructor(props) {
@@ -104,8 +104,13 @@ class RelationNetwork extends React.PureComponent {
                 id: `${des.type}-${des.id}`,
                 label: des.attributes.canonicalTitle,
                 shape: "circularImage",
-                image: des.attributes.posterImage.small,
-                color: des.type === "anime" ? "#00fffb" : (des.attributes.subtype === "manga" ? "#ff00d4" : "#91ff00"),
+                image: des.attributes.posterImage.small ?? brokenImage,
+                color:
+                    des.type === "anime"
+                        ? "#00fffb"
+                        : des.attributes.subtype === "manga"
+                        ? "#ff00d4"
+                        : "#91ff00",
                 borderWidth: 4,
             };
         });
